@@ -97,9 +97,8 @@ function frame_info = updataFrameInfomation(frame_info, frame_info_update)
 % 更新特征点后，对检测到的点进行分类,
 %{
 frame_info    新产生的特征点
-frame_info_update    之前的航迹信息
+frame_info_update  
 %}
-
 
 end
 
