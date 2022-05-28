@@ -19,6 +19,7 @@ frame_info = init_info(frame_info,validPtsIn.Location,validPtsIn.Location,zone,f
 [frame_info, updata_sign] = KLT(frame_info,Iin,frame,updata_sign);
 
 [M, N] = size(Iin);
-
+frame_update = frame;    %更新时的帧号
+number_all = frame_info.points_number;    %更新后的特征点数目
 
 

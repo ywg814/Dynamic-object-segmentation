@@ -1,5 +1,5 @@
 %% »æÖÆµ±Ç°Ö¡Í¼Ïñ
-function drawImage(I,frame_info, imagetitle, target_image, fp, frame, resultpath)
+function drawImage(I,frame_info, imagename, target_image, fp, frame, resultpath)
 figure(1)
 clf()
 
