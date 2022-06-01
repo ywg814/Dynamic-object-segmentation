@@ -12,7 +12,9 @@ addpath fuse
 addpath clustering/meanshift
 addpath seed_generate
 addpath clustering
-fclose all
+addpath background_subtraction
+addpath vision
+fclose all;
 %% 参数初始化
 global parameter
 parameterManagement()
@@ -29,7 +31,8 @@ initialframe
 initialSaveResult
 
 %% processing
-
+update_times = 0;
+frame_refer = 1;    %参考帧的帧
 for frame = 2:1:frame_number+1
     
     Iout = read_image([imagepath imagename(frame).name]);
@@ -40,7 +43,7 @@ for frame = 2:1:frame_number+1
     %     figure(2)
     %     imshow(Iout,[])
     %     hold on
-
+    
     % 初始化
     frame_info = match_points(featuresIn ,validPtsIn,featuresOut,validPtsOut,frame_info,frame);
     featuresIn = featuresOut;
@@ -58,26 +61,33 @@ for frame = 2:1:frame_number+1
     frame_info = spatialFiltering(frame_info, frame);
     
     % 利用特征点生成图像区域
+    targets = frame_info.targets{end};
+    targets_numbers = size(targets, 2);    %当前帧检测到的目标点数目
     target_image = zeros(size(Iout));
-    [centroids, bboxes, mask] = detectObjects(uint8(Iout));
-    %    target_image = SeedGenerate(frame_info,target_image, Iout);
+    if targets_numbers ~= 0
+        [mask] = detectObjects(Iout, frame_origin, frame_info);
+        target_image = mask;
+    end
     
     % 绘图
-    drawImage(Iout, frame_info, imagename, target_image, fp, frame, resultpath)
+    drawImage(Iout, frame_info, imagename, target_image, fp, frame, update_times, resultpath)
     
     % 是否更新点数据
     number_frame = sum(frame_info.is_match(:, frame));    %当前帧保存的跟踪点数目
     frame_delta = frame - frame_update;
     updata_sign = updataSign(number_all, number_frame, frame_delta);
     if updata_sign
+        update_times = update_times + 1;
         frame_info_update = frame_info;
         initialframe;    %更新SURF点
         frame_info = updataFrameInfomation(frame_info, frame_info_update);
         updata_sign = false;
     end
+    
+    
 end
 fclose(fp); %关闭文件
-fclose all
+fclose all;
 
 function updata_sign = updataSign(number_all, number_frame, frame_delta)
 % 是否需要更新
@@ -97,8 +107,9 @@ function frame_info = updataFrameInfomation(frame_info, frame_info_update)
 % 更新特征点后，对检测到的点进行分类,
 %{
 frame_info    新产生的特征点
-frame_info_update  
+frame_info_update    之前的航迹信息
 %}
+
 
 end
 

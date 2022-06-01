@@ -14,7 +14,8 @@ Iin = double(Iin);
 
 target = Iin;
 frame_info.zone = zone;
-frame_info = init_info(frame_info,validPtsIn.Location,validPtsIn.Location,zone,frame);
+tform = eye(3);
+frame_info = init_info(frame_info,validPtsIn.Location,validPtsIn.Location,zone,frame, tform);
 
 [frame_info, updata_sign] = KLT(frame_info,Iin,frame,updata_sign);
 
@@ -22,4 +23,13 @@ frame_info = init_info(frame_info,validPtsIn.Location,validPtsIn.Location,zone,f
 frame_update = frame;    %更新时的帧号
 number_all = frame_info.points_number;    %更新后的特征点数目
 
+%% 背景减法参数
+% obj.detector = vision.ForegroundDetector('NumGaussians', 3, ...
+%     'NumTrainingFrames', 40, 'MinimumBackgroundRatio', 0.7);
+% obj.blobAnalyser = vision.BlobAnalysis('BoundingBoxOutputPort', true, ...
+%     	'AreaOutputPort', true, 'CentroidOutputPort', true, ...
+%         'MinimumBlobArea', 600);
+%     
+% [centroids, bboxes, mask] = obj.detector.step(uint8(Iin));    %初始化第一帧
+frame_origin = Iin;
 

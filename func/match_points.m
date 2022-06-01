@@ -10,4 +10,8 @@ matchedPtsOut = validPtsOut(index_pairs(:,2));
 pin = matchedPtsIn.Location;
 pout= matchedPtsOut.Location;
 
-frame_info = init_info(frame_info,pin,pout,[],frame);
+gte = vision.GeometricTransformEstimator;
+gte.Transform = 'Projective';
+[tform, ~] = step(gte, pout, pin);
+
+frame_info = init_info(frame_info,pin,pout,[],frame, tform);
