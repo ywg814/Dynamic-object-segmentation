@@ -8,10 +8,13 @@ parameter.temporalFiltering_thr = 3;      % ¿Õ¼äÓòÂË²¨Á¬ĞøthrÖ¡²»Îª±³¾°ÅĞ¶ÏÎªÄ¿±
 
 %% ¿Õ¼äÓòÂË²¨
 parameter.myIsoData_para.K = 3;         % Ô¤¹À¾ÛÀàÊıÄ¿
-parameter.myIsoData_para.theta_N = 2;   % Ã¿Ò»¾ÛÀàÓòÖĞ×îÉÙµÄÑù±¾ÊıÄ¿
+parameter.myIsoData_para.theta_N = 1;   % Ã¿Ò»¾ÛÀàÓòÖĞ×îÉÙµÄÑù±¾ÊıÄ¿
 parameter.myIsoData_para.theta_S = 30;   % Ò»¸öÑù±¾µÄ±ê×¼²îãĞÖµ
 parameter.myIsoData_para.theta_c = 20;  % ºÏ²¢¾ÛÀàÖĞĞÄ¾àÀë²ÎÊı
-parameter.myIsoData_para.I = 20;        % µü´ú´ÎÊı
+parameter.myIsoData_para.I = 30;        % µü´ú´ÎÊı
 parameter.myIsoData_para.N_c = 1;        % ¼ÇÂ¼µÄ¾ÛÀàÊıÄ¿
  
-
+%% ±³¾°¼õ·¨
+parameter.back_thr = 30;    %detectObject ,ÇĞ¸îÇ°¾°Óë±³¾°
+parameter.r = 0.8;    %detectObject ,ÇĞ¸îÇ°¾°Óë±³¾°
+parameter.L = 40;    %ÓëÄ¿±ê×î´ó¾àÀë
