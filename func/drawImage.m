@@ -1,5 +1,5 @@
 %% 绘制当前帧图像
-function drawImage(I,frame_info, imagename, target_image, fp, frame, update_times, resultpath)
+function drawImage(I,frame_info, imagename, target_image, fp, frame, update_times, resultpath, mask_path, save_result)
 figure(1)
 clf()
 
@@ -8,7 +8,7 @@ set(gcf,'position', [50 50 N M])
 imshow(I, 'border', 'tight', 'initialmagnification','fit','DisplayRange',[0 255])
 % imshow(I,[])
 hold on
-isDraw = [1 0 0 1 1 0 1];
+isDraw = [1 1 1 1 1 0 1];
 % 绘制所有匹配点
 % 绘制判定为目标的点
 % 绘制判定为背景的点
@@ -29,10 +29,11 @@ if isDraw(1)
 end
 % 判定为目标的点
 if isDraw(2)
+%     isFound_allpoints = frame_info;
     target = frame_info.target(:,end);
-    target = target(isFound_allpoints);
+%     target = target(isFound_allpoints);
     points = points_track(target,:);
-    scatter(points(:,1), points(:,2),'b*')
+    scatter(points(:,1), points(:,2),'b.')
     Legend = [Legend '聚类算法判定为目标的点'];
 end
 % 绘制聚类算法判定为背景的点
@@ -56,16 +57,7 @@ end
 
 % 背景减法
 if isDraw(5)
-    figure(2)
-    imshow(target_image,[])
-    mask_path = [resultpath '\mask\'];
-    if ~exist(mask_path)
-        mkdir(mask_path)
-    else
-        rmdir(mask_path, 's')
-        mkdir(mask_path)
-    end
-    saveas(gca,[mask_path imagename(frame).name] )
+    
 end
 % 是否绘制出航迹
 if isDraw(6)
@@ -80,10 +72,13 @@ if isDraw(6)
 end
 % legend(Legend)
 % 是否保存图片
-if isDraw(7)
-    figure(1)
-    saveas(gca,[resultpath '\' imagename(frame).name] )
-    fprintf(fp, '%-20s %-20s %-20s %-20s %-20s \r', num2str(frame),num2str(sum(is_match)),num2str(size(targets, 2)), num2str(sum(sum(targets))), update_times);
+if save_result
+    h1 = figure(1);
+    saveas(h1,[resultpath '\' imagename(frame).name] );
+%     h2 = figure(2);
+    h2 = imshow(target_image,[]);
+    saveas(h2,[mask_path imagename(frame).name] );
+    fprintf(fp, '%-20s %-20s %-20s %-20s %-20s \r', num2str(frame),num2str(sum(is_match)),num2str(size(targets, 2)), num2str(sum(sum(targets))), num2str(update_times));
 end
 
 

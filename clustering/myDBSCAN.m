@@ -9,8 +9,9 @@ sign = zeros(data_num,1);
 Idx = false(data_num,1);
 sign(1) = value;
 data_err = data_sort(2:end) - data_sort(1:end-1);
-data_err = sort(data_err);
+data_err = sort(data_err);data_err(isinf(data_err)) = [];data_err(isnan(data_err)) = [];
 thr = max([myDBSCAN_thr(1)*median(data_err) myDBSCAN_thr(2)*mean(data_err(end-10:end)) myDBSCAN_thr(3)*mean(data_err)]);
+% thr = max([myDBSCAN_thr(1)*median(data_err) myDBSCAN_thr(3)*mean(data_err)]);
 
 for i = 2:1:data_num
     err = abs(data_sort(i) - data_sort(i-1));

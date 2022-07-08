@@ -16,7 +16,8 @@ v_temp = v_temp(is_match,:);
 
 v_x(is_match) = v_temp(:,1);
 v_y(is_match) = v_temp(:,2);
-L_temp = frame_info.points_track(:,:,frame)  - frame_info.points_track(:,:,frame_info.refer) ;
+% L_temp = frame_info.points_track(:,:,frame)  - frame_info.points_track(:,:,frame_info.refer);
+L_temp = 0.6*abs(frame_info.points_track(:,:,frame)  - frame_info.points_track(:,:,frame_info.refer)) + 0.4*(frame_info.points_track(:,:,frame)  - frame_info.points_track(:,:,frame_info.refer));
 L_x(is_match) = L_temp(is_match,1);
 L_y(is_match) = L_temp(is_match,2);
 L_L(is_match) = sum((L_temp(is_match,:)), 2);

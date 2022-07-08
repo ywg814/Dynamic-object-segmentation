@@ -17,12 +17,15 @@ frame_info.zone = zone;
 tform = eye(3);
 frame_info = init_info(frame_info,validPtsIn.Location,validPtsIn.Location,zone,frame, tform);
 
-[frame_info, updata_sign] = KLT(frame_info,Iin,frame,updata_sign);
+[frame_info, update_sign] = KLT(frame_info,Iin,frame,update_sign);
 
 [M, N] = size(Iin);
 frame_update = frame;    %更新时的帧号
 number_all = frame_info.points_number;    %更新后的特征点数目
+frame_delta = 0;
 
+original_composition = [];    %生成背景图像成份
+original_composition(:,:,1) = Iin;    %origin
 %% 背景减法参数
 % obj.detector = vision.ForegroundDetector('NumGaussians', 3, ...
 %     'NumTrainingFrames', 40, 'MinimumBackgroundRatio', 0.7);
