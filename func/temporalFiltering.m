@@ -5,6 +5,13 @@ function frame_info = temporalFiltering(frame_info,frame)
 frame_info.background = background;
 frame_info.target = target;
 frame_info.sus_target = sus_target;
+if 1
+    points_track = frame_info.points_track(:,:,end) ;
+    points = points_track(target(:, end),:);
+    scatter(points(:,1), points(:,2),'b.')
+    points = points_track(background(:, end),:);
+    scatter(points(:,1), points(:,2),'r.')
+end
 
 %% 时间分类
 
@@ -27,14 +34,19 @@ Idx = myDBSCAN(distance);
 background(is_match,frame) = Idx;
 
 sus_target(is_match,frame) = ~Idx;
+% 
+% cc1 = frame_info.points_track(background(:,frame),:,frame);
+% cc2 = frame_info.points_track(sus_target(:,frame),:,frame);
 
-cc1 = frame_info.points_track(background(:,frame),:,frame);
-cc2 = frame_info.points_track(sus_target(:,frame),:,frame);
-
+if 0  % 是否加入疑似目标
 temp = sum(sus_target(:,max(end-10,1):end),2) + sum(target(:,max(end-10,1):end),2);
-c1 = (temp>thr);    %连续5帧不为背景判断为目标
+c1 = (temp>=thr);    %连续thr帧不为背景判断为目标
 c1 = c1 & sus_target(:,end);
 target(c1,frame) = true;
 sus_target(c1,frame) = false;
+else
+
+target(:, frame) = sus_target(:, frame);
+end
 
 % 提取到的点

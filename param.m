@@ -34,7 +34,7 @@ switch(imagetitle)
         begin = 1;
         frame_number = size(imagename, 1);
            
-    case 'egtest0'
+    case 'egtest05'
         imagepath = 'E:\¸ú×ÙÍ¼ÏñÊý¾Ý¼¯\PETS2005\egtest05\';
         numzeros = 5;
         fext = '.jpg';

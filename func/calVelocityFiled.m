@@ -31,7 +31,7 @@ X = [ones(size(plane_data, 1), 1) plane_data(:,1:2)]; % [wight x, y]
 yField = regress(plane_data(:,4),X) ;
 field = [xField, yField];
 % 平面方程： velocityX = by(1) + by(2)*position(:,1) + by(3)*position(:,2)
-
+ 
 %%
 function v_sign = isSatisfiePlane(judge_plane_data, plane_data, field)
 global parameter
