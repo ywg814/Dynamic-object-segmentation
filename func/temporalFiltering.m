@@ -1,52 +1,63 @@
 %% 时间域滤波
 function frame_info = temporalFiltering(frame_info,frame)
-% 时间分类，分成三类：background target sus_target  背景 目标 疑似目标
-[background, target, sus_target] = timeCluster(frame_info, frame);
-frame_info.background = background;
-frame_info.target = target;
-frame_info.sus_target = sus_target;
+% 时间分类，分成三类：background target  背景 目标
+frame_info.targets_clusters = timeCluster(frame_info, frame);
 if 1
-    points_track = frame_info.points_track(:,:,end) ;
-    points = points_track(target(:, end),:);
-    scatter(points(:,1), points(:,2),'b.')
-    points = points_track(background(:, end),:);
+    points_track = frame_info.points_track(:,:,end) ; 
+    targets_clusters = frame_info.targets_clusters(:, end);
+    
+    background = isinf(targets_clusters);
+    points = points_track(background,:);
     scatter(points(:,1), points(:,2),'r.')
+    
+    targets_clusters(isinf(targets_clusters)) = nan;
+    for i = 1:1:max(targets_clusters)
+        target = (targets_clusters == i);
+        points = points_track(target,:);
+        scatter(points(:,1), points(:,2),'*')
+    end
+    
+   
+    
 end
 
 %% 时间分类
 
-function [background, target, sus_target] = timeCluster(frame_info, frame)
-global parameter
-thr = parameter.temporalFiltering_thr;
+function targets_clusters = timeCluster(frame_info, frame)
+% global parameter
+% thr = parameter.temporalFiltering_thr;
 is_match = frame_info.is_match(:,frame);
-background = frame_info.background;
-target = frame_info.target;
-sus_target = frame_info.sus_target;
-background(:,frame) = false;
-target(:,frame) = false;
-sus_target(:,frame) = false;
-% 以距离作为区分
+targets_clusters = nan(frame_info.points_number, 1);
+% 以运动距离作为区分
 distance = frame_info.L_L(is_match,frame);
-Idx = myDBSCAN(distance);
-% Idx = MeanShift_f(distance,radius);
+distance_cluster = myDBSCAN(distance);
+% 以运动方向作为区分
+theta = frame_info.L_theta(is_match,frame);
+theta_cluster = myDBSCAN(theta);
+% 合并聚类结果
+clusters = mergeCluster(distance_cluster, theta_cluster);
 
 % 分为背景和目标
-background(is_match,frame) = Idx;
+targets_clusters(is_match,frame) = clusters;
 
-sus_target(is_match,frame) = ~Idx;
-% 
-% cc1 = frame_info.points_track(background(:,frame),:,frame);
-% cc2 = frame_info.points_track(sus_target(:,frame),:,frame);
 
-if 0  % 是否加入疑似目标
-temp = sum(sus_target(:,max(end-10,1):end),2) + sum(target(:,max(end-10,1):end),2);
-c1 = (temp>=thr);    %连续thr帧不为背景判断为目标
-c1 = c1 & sus_target(:,end);
-target(c1,frame) = true;
-sus_target(c1,frame) = false;
-else
-
-target(:, frame) = sus_target(:, frame);
+% 合并运动方向和运动距离的聚类结果
+function clusters = mergeCluster(distance_cluster, theta_cluster)
+num_distance = max(distance_cluster);
+num_theta = max(theta_cluster);
+value = reshape(1:num_distance*num_theta,num_distance, num_theta);
+clusters = zeros(num_distance, 1);
+num = size(distance_cluster, 1);
+for i = 1:1:num
+    clusters(i) = value(distance_cluster(i), theta_cluster(i));
 end
 
-% 提取到的点
+[~, ~, clusters] = unique(clusters);
+for i = 1:1:max(clusters)
+    cluster(i) = sum(clusters==i);
+end
+back = find(cluster==max(cluster));
+back = (clusters==back');  % 寻找最大的类，作为背景
+back = logical(sum(back,2));
+clusters(back) = inf;
+

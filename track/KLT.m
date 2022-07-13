@@ -1,4 +1,4 @@
-function [frame_info, updata_sign]= KLT(frame_info,I,frame,updata_sign)
+function frame_info = KLT(frame_info,I,frame,updata_sign)
 I = uint8(I);
 if updata_sign
     % ½Çµã
@@ -20,17 +20,14 @@ if updata_sign
     end
     frame_info.is_true_target = is_true_target;
     
-    frame_info.background(:,frame) = true(points_number,1);
-    frame_info.target(:,frame) = false(points_number,1);
-    frame_info.sus_target(:,frame) = false(points_number,1);
-
-    frame_info.refer = 1;
-    
+    frame_info.targets_clusters(:,frame) = nan(points_number,1);
+   
+    frame_info.refer = frame;
     frame_info.targets = {};
-    frame_info.relevance = {};
-    frame_info.relevance_refer = {};
+%     frame_info.relevance = {};
+%     frame_info.relevance_refer = {};
     
-    updata_sign = false;
+%     updata_sign = false;
     return
 end
 pointTracker = frame_info.pointTracker;

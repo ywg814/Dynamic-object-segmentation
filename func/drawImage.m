@@ -1,6 +1,6 @@
 %% 绘制当前帧图像
 function drawImage(I,frame_info, imagename, target_image, fp, frame, update_times, resultpath, mask_path, save_result)
-figure(1)
+figure(3)
 clf()
 
 [M, N] = size(I);
@@ -21,6 +21,7 @@ isDraw = [1 1 1 1 1 0 1];
 Legend = {};
 is_match = frame_info.is_match(:, end);
 points_track = frame_info.points_track(:,:,end) ;
+targets_clusters = frame_info.targets_clusters(:, end);
 % 绘制所有匹配点
 if isDraw(1)
     
@@ -29,16 +30,14 @@ if isDraw(1)
 end
 % 判定为目标的点
 if isDraw(2)
-%     isFound_allpoints = frame_info;
-    target = frame_info.target(:,end);
-%     target = target(isFound_allpoints);
+    target = ~isnan(targets_clusters) & ~isinf(targets_clusters);
     points = points_track(target,:);
     scatter(points(:,1), points(:,2),'b.')
     Legend = [Legend '聚类算法判定为目标的点'];
 end
 % 绘制聚类算法判定为背景的点
 if isDraw(3)
-    background = frame_info.background(:,end);
+    background = isinf(targets_clusters);
     points = points_track(background,:);
     scatter(points(:,1), points(:,2),'r.')
     Legend = [Legend '聚类算法判定为背景的点'];

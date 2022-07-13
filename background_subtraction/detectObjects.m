@@ -32,6 +32,14 @@ mask_temp1(mask_temp>back_thr) = true;
 mask_temp = mask_temp1;
 mask_temp = mask_temp & logical(Ir);    %避免重构的视差部分影响检测
 mask = false(size(mask_temp));
+% mask_temp = imopen(mask_temp, strel('rectangle', [3,3]));
+% mask_temp = imclose(mask_temp, strel('rectangle', [15, 15]));
+% mask_temp = imfill(mask_temp, 'holes');
+if 1
+    figure(5)
+    imshow(mask_temp);
+    
+end
 for targer_number = 1:1:targets_numbers    %对目标进行定位
     points_track = frame_info.points_track(:,:,end) ;
     points = points_track(logical(targets(:,targer_number)),:);
@@ -51,10 +59,11 @@ for targer_number = 1:1:targets_numbers    %对目标进行定位
     mask = connection8(mask_temp, mask, points, L);
     
     % Apply morphological operations to remove noise and fill in holes.
-    mask = imopen(mask, strel('rectangle', [3,3]));
+
+end
+mask = imopen(mask, strel('rectangle', [3,3]));
     mask = imclose(mask, strel('rectangle', [15, 15]));
     mask = imfill(mask, 'holes');
-end
 % 更新背景图像
 [origin, original_composition]= updateOrigin(origin, mask, image_frame, H, agt, original_composition, frame);
 end
@@ -63,7 +72,7 @@ function mask = connection8(mask_temp, mask, points, L)
 
 seed = points;
 [M, N] = size(mask);
-mask_count = true(M, N);
+mask_count = true(M, N);    %未被遍历到的点标记为true
 while ~isempty(seed)
     x = seed(1, 1);
     y = seed(1, 2);
@@ -71,9 +80,13 @@ while ~isempty(seed)
     if x == 0 || y == 0
         continue
     end
-    mask_temp(y, x) = false;
+    
     mask_count(y, x) = false;
-    for i = 1:1:size(L, 1)
+    if ~mask_temp(y, x)    %种子点不是前景点
+        continue
+    end
+    mask_temp(y, x) = false;
+    for i = 1:1:size(points, 1)
         delta_L(i) = norm(([x,y] - points(i,:)), 2);
     end
     if min(delta_L) > L    %与种子点的最小距离都小于L
@@ -153,7 +166,7 @@ end
 original_composition(:,:,1) = origin;
 
 if 1
-    figure(3)
+    figure(4)
     imshow(original_composition(:,:,1), []);
     
 end

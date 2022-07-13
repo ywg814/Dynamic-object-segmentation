@@ -3,8 +3,8 @@ function parameterManagement()
 global parameter
 parameter.SURFF_para = 200;             % SURF角点检测参数    值越大，点越少
 
-parameter.myDBSCAN_thr = 0.7*[1.3 0.5 1.1]; % 时间域滤波参数  thr*[mediuam max mean],阈值越小判断为疑似目标的点越多[1.3 0.5 1.3]
-parameter.isSatisfiePlane_thr = 10;      % 是否满足平面约束 thr*std    8    值越大，条件越严
+parameter.myDBSCAN_thr = 5*[1.3 0.5 1.1]; % 时间域滤波参数  thr*[mediuam max mean],阈值越小判断为疑似目标的点越多[1.3 0.5 1.3]
+parameter.isSatisfiePlane_thr = 8;      % 是否满足平面约束 thr*std    8    值越大，条件越严
 
 %% 空间域滤波
 parameter.temporalFiltering_thr = 3;      % 空间域滤波连续thr帧不为背景判断为目标,目前默认值为3

@@ -20,13 +20,14 @@ global parameter
 parameterManagement()
 global obj
 %% select image
-imagetitle = 'egtest05';
+imagetitle = 'egtest02';
 %% 初始化参数
 param
 %% 初始化图像参数
 frame = begin;
 update_sign = true;    %是否更新
 initialframe
+update_sign = false;
 %% 初始化存储结果
 save_result = true;    %!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 initialSaveResult
@@ -52,7 +53,7 @@ for frame = 2:1:frame_number
     validPtsIn = validPtsOut;
     
     % KLT跟踪算法
-    [frame_info, update_sign] = KLT(frame_info,Iout,frame,update_sign);
+    frame_info = KLT(frame_info,Iout,frame,update_sign);
     frame_info = deal_KLT_data(frame_info,frame);
     
     % 时间域滤波
@@ -64,7 +65,7 @@ for frame = 2:1:frame_number
     %     end
     
     % 当存在更新时，对目标点不判断放松
-    frame_info = ifUpdate(frame_info, update_target, frame_delta);
+%     frame_info = ifUpdate(frame_info, update_target, frame_delta);
     
     % 空间聚类
     frame_info = spatialFiltering(frame_info, frame);

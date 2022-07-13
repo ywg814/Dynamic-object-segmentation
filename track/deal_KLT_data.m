@@ -34,3 +34,4 @@ frame_info.L_x(:,frame) = L_x;
 frame_info.L_y(:,frame) = L_y;
 frame_info.L_L(:,frame) = L_L;
 frame_info.L_L(:,frame) = L_L + frame_info.L_L(:,frame-1);
+frame_info.L_theta(:, frame) = L_theta;

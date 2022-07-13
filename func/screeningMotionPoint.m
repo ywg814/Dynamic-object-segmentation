@@ -3,22 +3,20 @@ function frame_info = screeningMotionPoint(frame_info,frame)
 v_sign = calVelocityFiled(frame_info);
 frame_info.v_sign(:,frame) = v_sign;
 
-background = frame_info.background;
-target = frame_info.target;
-sus_target = frame_info.sus_target;
+targets_clusters = frame_info.targets_clusters;
+targets_clusters(v_sign, end) = inf;
 
-background(:,end) = background(:,end) | v_sign;
-target(v_sign, end) = false;
-sus_target(v_sign, end) = false;
+frame_info.targets_clusters = targets_clusters;
 
-frame_info.background = background;
-frame_info.target = target;
-frame_info.sus_target = sus_target;
-
-if 1
+if 0
     points_track = frame_info.points_track(:,:,end) ;
-    points = points_track(target(:, end),:);
+    targets_clusters = frame_info.targets_clusters(:, end);
+    
+    target = ~isnan(targets_clusters) & ~isinf(targets_clusters);
+    points = points_track(target,:);
     scatter(points(:,1), points(:,2),'b.')
-    points = points_track(background(:, end),:);
+    
+    background = isinf(targets_clusters);
+    points = points_track(background,:);
     scatter(points(:,1), points(:,2),'r.')
 end

@@ -17,7 +17,7 @@ frame_info.zone = zone;
 tform = eye(3);
 frame_info = init_info(frame_info,validPtsIn.Location,validPtsIn.Location,zone,frame, tform);
 
-[frame_info, update_sign] = KLT(frame_info,Iin,frame,update_sign);
+frame_info = KLT(frame_info,Iin,frame,update_sign);
 
 [M, N] = size(Iin);
 frame_update = frame;    %更新时的帧号

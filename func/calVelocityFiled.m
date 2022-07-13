@@ -1,6 +1,7 @@
 %% 提取速度场单应性矩阵
 function v_sign = calVelocityFiled(frame_info)
-index = frame_info.background(:, end);
+targets_clusters = frame_info.targets_clusters(:, end);
+index = isinf(targets_clusters);
 % index = frame_info.KLT{end}.isFound_allpoints;
 % 提取背景点
 dataX = frame_info.L_x(index,end);

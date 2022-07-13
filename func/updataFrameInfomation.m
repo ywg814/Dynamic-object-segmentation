@@ -5,9 +5,9 @@ frame_info    新产生的特征点
 frame_info_before_update    之前的航迹信息
 mask    当前帧目标位置
 %}
-global parameter
-
-[M, N] = size(mask);
+% global parameter
+% 
+% [M, N] = size(mask);
 points = frame_info.SURFF_pin{frame};
 % for i = 1:1:size(points, 1)
 %     [x, y] = deal(points(i, 1), points(i, 2));
@@ -24,7 +24,7 @@ points = frame_info.SURFF_pin{frame};
 %     end
 %    
 % end
-
+update_target = false(size(points, 1));
 for i = 1:1:size(points, 1)
     [x, y] = deal(points(i, 1), points(i, 2));
     
